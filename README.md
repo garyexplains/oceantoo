@@ -60,5 +60,16 @@ An example of a simple 4 bit LFSR is to use bits 3 and 4. These are combined usi
 |0|1|0|0||
 |0|0|1|0||
 
+When generating random number sequences the bit that is shifted out (e.g. `0001` shifted right will shift out the `1`) is used to generate random bits which are used as random numbers (depending on how many bits are needed).
+
 ### 128 bit LFSR
 Oceantoo uses a 128-bit LFSR with the taps of 128, 127, 126, 121. Such an LFSR has a maximum cycle, meaning it will generate 340,282,366,920,938,463,463,374,607,431,768,211,455 unique numbers, with no repeats!!!
+
+### LFSR Weakness
+Given a sufficient amount of data there are ways to determine "crack" the LFSR and get its initial state and simulate the numbers it generates. The Berlekamp–Massey algorithm is an algorithm that will find the shortest linear feedback shift register (LFSR) for a given binary output sequence.
+
+To overcome this weakness there are various methods which can be used. One method is to use a multiplexed LFSR. These were first mentioned in the PhD thesis of S. M. Jennings in 1980.
+
+Multiplexed LFSRs and Shrinking generators use multiple LFSRs. In the case of the latter one LFSR controls how the other is used. So if you have LFSR1 and LFSR2, then when LSFR1 generates (by shifting) a 1, then the output is the shifted out bit of LFSR2. When LFSR1 is 0, the LFSR2 is shifted (and the carry bits applied) but the output isn't used. The algorithm then loops, until LFSR1 generates a 1, and so LFSR2 is used.
+
+Other variations include alternating between LFSR1 and LFSR2, etc.
