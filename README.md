@@ -103,8 +103,10 @@ Oceantoo also has the option to move along its sequence by `n` bytes before star
 ### Encryption
 The actual encryption is done using XOR. Each byte of the file is XORed with the next byte out of the three 128-bit LFSR combo. This means that to encrypt a file you run it through Oceantoo once and to decrypt it, you run it through again!
 
-### Example usage
+### Performance
+One of the advantages of a LFSR is that it is easy to implement in hardware. The nature of the shift register setup allows for high performance encryption. The addition of shrinking and the use of multiple LFSRs means Oceantoo is not as efficient as other encryption mechanisms.
 
+### Example usage
 * `oceantoo -p mypassword1 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and write the output to `secret_designs.doc.oct'
 * 'oceantoo -p mypassword1 secret_designs.doc.oct secret_designs.doc` - Is the reverse (i.e. decode) of above.
 * `oceantoo -p mypassword1 -n 187172 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and offset of 187172 and write the output to `secret_designs.doc.oct'
