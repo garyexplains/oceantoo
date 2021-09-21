@@ -82,7 +82,7 @@ In the same paper Anderson suggested PIKE. PIKE improves on FISH. Anderson notes
 
 Therefore Oceantoo uses the carry bits of an LFSR to shrink the sequence (see below).
 
-PIKE also used XOR for the bit stream, as does Oceantoo.
+PIKE also used XOR for the LSBs of each LFSR, as does Oceantoo.
 
 ### Oceantoo's LFSRs
 In the paper "Statistical Weaknessof Multiplexed Sequences" Jovan Dj. Golic et al showed that there are some inherent weaknesses in multiplexed LFSRs. The paper also suggested some remedies. Namely to decimate (shrink) the output of the LFSR (similar to the shrinking generator) and to XOR the output of the two LFSRs.
