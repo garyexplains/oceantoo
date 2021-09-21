@@ -110,3 +110,12 @@ The actual encryption is done using XOR. Each byte of the file is XORed with the
 * `oceantoo -p mypassword1 -n 187172 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and offset of 187172 and write the output to `secret_designs.doc.oct'
 * `oceantoo -p mypassword1 -n 187172 secret_designs.doc.oct secret_designs.doc` - Is the reverse (i.e. decode) of above.
 * `oceantoo -p mypassword1 -n 9854213 -r -l 50` - Will print 50 random bytes (0-255) from the Oceantoo's LFSRs based on the password and offset.
+
+### Disclaimer because good cryptography is hard!
+"Anyone can create an algorithm that he himself cannot break" - Bruce Schneier.
+
+Good cryptography is hard, there are lots of pitfalls, etc. Oceantoo has never been scrutinized by mathematicians or cryptography experts. It should be considered purely an academic (and amateur) project.
+
+Oceanto is provided "as is" and any express or implied warranties, including, but not limited to, the implied warranties of fitness for a particular purpose are disclaimed.
+
+YOU HAVE BEEN WARNED.
