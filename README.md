@@ -100,6 +100,9 @@ Each LFSR needs an initial state, in fact 128-bits of initial state. Oceantoo in
 
 Oceantoo also has the option to move along its sequence by `n` bytes before starting the encode or decode. This means that to encode a file you need to supply a password and an optional offset. To decode you need the same password and the same offset, otherwise decode will fail.
 
+### Encryption
+The actual encryption is done using XOR. Each byte of the file is XORed with the next byte out of the three 128-bit LFSR combo. This means that to encrypt a file you run it through Oceantoo once and to decrypt it, you run it through again!
+
 ### Example usage
 
 * `oceantoo -p mypassword1 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and write the output to `secret_designs.doc.oct'
