@@ -123,3 +123,6 @@ Good cryptography is hard, there are lots of pitfalls, etc. Oceantoo has never b
 Oceanto is provided "as is" and any express or implied warranties, including, but not limited to, the implied warranties of fitness for a particular purpose are disclaimed.
 
 YOU HAVE BEEN WARNED.
+
+### Acknowledgements
+The SHA256 code comes from Brad Conte. See his GitHub here: https://github.com/B-Con/crypto-algorithms
