@@ -1,0 +1,23 @@
+# Copyright (c) 2021, Dan Drown
+# See https://blog.dan.drown.org/cryptanalysis-of-oceantoo/
+
+SIZE=400x400
+DRAW="rectangle 50,50 350,350; rectangle 100,100 300,300; rectangle 150,150 250,250"
+DEPTH=1
+
+image: example.png example.enc.png
+
+example.enc.png: example.enc
+	convert -size $(SIZE) -depth $(DEPTH) gray:example.enc example.enc.png
+
+example.enc: example.gray
+	./oceantoo -p "some random password" example.gray example.enc
+
+example.png: example.gray
+	convert -size $(SIZE) -depth $(DEPTH) example.gray example.png
+
+example.gray: Makefile
+	convert -size $(SIZE) -depth $(DEPTH) canvas:white -fill none -stroke black -strokewidth 10 -draw $(DRAW) example.gray
+
+clean:
+	rm -f example.enc example.enc.png example.gray example.png
