@@ -35,16 +35,36 @@ void lfsr128_set_password(lfsr128_t *l, unsigned char *p) {
   lfsr128_init(l, lfsr_h, lfsr_l);
 }
 
+void lfsr128x3_set_from_captain(lfsr128_t *captain, lfsr128x3_t *l) {
+  l->lfsr[0].lfsr_h = lfsr128_shiftn(captain, 64);
+  l->lfsr[0].lfsr_l = lfsr128_shiftn(captain, 64);
+  l->lfsr[1].lfsr_h = lfsr128_shiftn(captain, 64);
+  l->lfsr[1].lfsr_l = lfsr128_shiftn(captain, 64);
+  l->lfsr[2].lfsr_h = lfsr128_shiftn(captain, 64);
+  l->lfsr[2].lfsr_l = lfsr128_shiftn(captain, 64);
+}
+
 void lfsr128x3_set_password(lfsr128x3_t *l, unsigned char *p) {
   lfsr128_t lfsr128_captain;
 
   lfsr128_set_password(&lfsr128_captain, p);
-  l->lfsr[0].lfsr_h = lfsr128_shiftn(&lfsr128_captain, 64);
-  l->lfsr[0].lfsr_l = lfsr128_shiftn(&lfsr128_captain, 64);
-  l->lfsr[1].lfsr_h = lfsr128_shiftn(&lfsr128_captain, 64);
-  l->lfsr[1].lfsr_l = lfsr128_shiftn(&lfsr128_captain, 64);
-  l->lfsr[2].lfsr_h = lfsr128_shiftn(&lfsr128_captain, 64);
-  l->lfsr[2].lfsr_l = lfsr128_shiftn(&lfsr128_captain, 64);
+  lfsr128x3_set_from_captain(&lfsr128_captain, l);
+}
+
+void lfsr128x3_set_init_state(lfsr128x3_t *l, lfsr128_t *initState) {
+  l->lfsr[0].lfsr_h = initState->lfsr_h;
+  l->lfsr[0].lfsr_l = initState->lfsr_l;
+  l->lfsr[1].lfsr_h = initState->lfsr_h;
+  l->lfsr[1].lfsr_l = initState->lfsr_l;
+  l->lfsr[2].lfsr_h = initState->lfsr_h;
+  l->lfsr[2].lfsr_l = initState->lfsr_l;
+}
+
+void lfsr128x3_set_cap_state(lfsr128x3_t *l, lfsr128_t *initState) {
+  lfsr128_t lfsr128_captain;
+
+  lfsr128_init(&lfsr128_captain, initState->lfsr_h, initState->lfsr_l);
+  lfsr128x3_set_from_captain(&lfsr128_captain, l);
 }
 
 void lfsr128_init(lfsr128_t *l, uint64_t lfsr_h, uint64_t lfsr_l) {
@@ -143,6 +163,9 @@ void usage() {
       "\t-p - Password (i.e. key)\n"
       "\t-n - Random number seq offset\n"
       "\t-r - Print random numbers (doesn't encode/decode the file)\n"
+      "\t-1 - Testing: Force set lower 64 bits of the 3 LFSRs, in hex\n"
+      "\t-2 - Testing: Force set upper 64 bits of the 3 LFSRs, in hex\n"
+      "\t-c - Testing: Force set the captain instead (with -1 and -2)\n"
       "Arguments: \n"
       "\tsource - Input filename \n"
       "\toutput - Output filename \n");
@@ -159,8 +182,11 @@ int main(int argc, char *argv[]) {
   char *output_fn = NULL;
   lfsr128x3_t lfsr;
   int how_many_rand_nums = 1000000;
+  int use_init_state = 0;
+  int init_state_captain = 0;
+  lfsr128_t init_state = {0,0};
 
-  while ((opt = getopt(argc, argv, "rl:n:p:hv?")) != -1) {
+  while ((opt = getopt(argc, argv, "rl:n:p:hv1:2:c?")) != -1) {
     switch (opt) {
     case 'v':
       verbose = 1;
@@ -182,13 +208,24 @@ int main(int argc, char *argv[]) {
       usage();
       exit(EXIT_FAILURE);
       break;
+    case '1':
+      use_init_state = 1;
+      init_state.lfsr_l = strtoull(optarg, NULL, 16);
+      break;
+    case '2':
+      use_init_state = 1;
+      init_state.lfsr_h = strtoull(optarg, NULL, 16);
+      break;
+    case 'c':
+      init_state_captain = 1;
+      break;
     default: /* '?' */
       usage();
       exit(EXIT_FAILURE);
     }
   }
 
-  if (password == NULL) {
+  if (password == NULL && !use_init_state) {
     fprintf(stderr, "Password needed.\n\n");
     usage();
     exit(EXIT_FAILURE);
@@ -220,6 +257,14 @@ int main(int argc, char *argv[]) {
     if (password != NULL) {
       printf("Password: %s\n", password);
     }
+    if (use_init_state) {
+      printf(
+        "Forced initial state of %s: %lx,%lx\n",
+        init_state_captain ? "captain" : "LFSRs",
+        init_state.lfsr_h,
+        init_state.lfsr_l
+      );
+    }
     if (print_random_numbers) {
       printf("Printing random numbers...\n");
     } else {
@@ -228,7 +273,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  lfsr128x3_set_password(&lfsr, password);
+  if (use_init_state) {
+    if (init_state_captain) {
+      lfsr128x3_set_cap_state(&lfsr, &init_state);
+    } else {
+      lfsr128x3_set_init_state(&lfsr, &init_state);
+    }
+  } else {
+    lfsr128x3_set_password(&lfsr, password);
+  }
 
   if(offset > 0) {
     for(int i=0;i<offset;i++) {
