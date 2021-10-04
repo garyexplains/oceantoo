@@ -109,9 +109,9 @@ The actual encryption is done using XOR. Each byte of the file is XORed with the
 One of the advantages of a LFSR is that it is easy to implement in hardware. The nature of the shift register setup allows for high performance encryption. The addition of shrinking and the use of multiple LFSRs means Oceantoo is not as efficient as other encryption mechanisms.
 
 ### Example usage
-* `oceantoo -p mypassword1 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and write the output to `secret_designs.doc.oct'
-* 'oceantoo -p mypassword1 secret_designs.doc.oct secret_designs.doc` - Is the reverse (i.e. decode) of above.
-* `oceantoo -p mypassword1 -n 187172 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and offset of 187172 and write the output to `secret_designs.doc.oct'
+* `oceantoo -p mypassword1 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and write the output to `secret_designs.doc.oct`
+* `oceantoo -p mypassword1 secret_designs.doc.oct secret_designs.doc` - Is the reverse (i.e. decode) of above.
+* `oceantoo -p mypassword1 -n 187172 secret_designs.doc secret_designs.doc.oct` - This will encode the Word document `secret_designs.doc` with the key `mypassword1` and offset of 187172 and write the output to `secret_designs.doc.oct`
 * `oceantoo -p mypassword1 -n 187172 secret_designs.doc.oct secret_designs.doc` - Is the reverse (i.e. decode) of above.
 * `oceantoo -p mypassword1 -n 9854213 -r -l 50` - Will print 50 random bytes (0-255) from the Oceantoo's LFSRs based on the password and offset.
 * `oceantoo -1 0x00 -2 0x00 -r -l 10` - Will print 10 random bytes from Oceantoo's LFSRs, which has been forcefully initialized to the bit pattern set by `-1` and `-2` (`lsfr_l` and `lfsr_h` respectively).
